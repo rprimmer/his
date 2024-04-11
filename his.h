@@ -11,7 +11,6 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-
 #include <sqlite3.h>
 
 /* Type for a parsed command to add. */
@@ -28,7 +27,6 @@ typedef struct {
   char **argv;
 } Args;
 
-
 /* Type of bindings in a sqlnew() call */
 typedef enum {
   INT,
@@ -41,7 +39,7 @@ typedef struct {
   sqlite3_stmt *stmt;
 } SqlCtx;
 
-/* Max parsing format that is acceptable and the default */
+/* Max parsing format_g that is acceptable and the default */
 #define DEFAULT_FORMAT 1
 #define MAX_FORMAT     3
 
@@ -51,20 +49,24 @@ typedef struct {
 #else
 #  define EXTERN extern
 #endif
-EXTERN int accept_his;          /* Also add cmds that start with 'his' */
-EXTERN int count;               /* Number of entries during recent listing */
-EXTERN char *db;                /* Database name */
-EXTERN sqlite3 *dbconn;         /* Database connection */
-EXTERN time_t first_timestamp;  /* First timestamps when searching/dumping */
-EXTERN int format;              /* Selected format */
-EXTERN int insert_count;        /* #inserts in the db, 0 if no inserts in run */
-EXTERN time_t last_timestamp;   /* Last timestamps when searching/dumping */
-EXTERN int multiargs;           /* --add should expect multi-args */
-EXTERN int report_missing_args; /* show error msg when #args is bad */
-EXTERN int utc_time;            /* List or import timestamps are UTC */
-EXTERN int verbose;             /* Verbosity or not */
 
-/* Functions */
+EXTERN char *db;                  /* Database name */
+
+// TODO: see what globals can be done away with entirely
+// INFO: refactored globals to have _g suffix 
+EXTERN int count_g;               /* Number of entries during recent listing */
+EXTERN int accept_his_g;          /* Also add cmds that start with 'his' */
+EXTERN sqlite3 *dbconn_g;         /* Database connection */
+EXTERN time_t first_timestamp_g;  /* First timestamps when searching/dumping */
+EXTERN time_t last_timestamp_g;   /* Last timestamps when searching/dumping */
+EXTERN int format_g;              /* Selected format_g */
+EXTERN int insert_count_g;        /* number of inserts in the db, 0 if no inserts in run */
+EXTERN int multiargs_g;           /* --add should expect multi-args */
+EXTERN int report_missing_args_g; /* show error msg when #args is bad */
+EXTERN int utc_time_g;            /* List or import timestamps are UTC */
+EXTERN int verbose_g;             /* Verbosity or not */
+
+// TODO: move these to their own TU and add doxygen
 extern void add(int ac, char **av);
 extern void db_cleanup(void);
 extern void error(char const *fmt, ...);

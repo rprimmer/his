@@ -6,7 +6,7 @@ void purge() {
   int cmd_id, cmd_timestamp, args_id;
 
   /* We need a first and a last timestamp to avoid mistakes. */
-  if (!first_timestamp || !last_timestamp)
+  if (!first_timestamp_g || !last_timestamp_g)
     error("purge requires --first=FROM and --last=TO");
 
   /* The procedure is as follows:
@@ -29,16 +29,15 @@ void purge() {
                    " AND    args.args_id=crossref.args_id "
                    " AND    (cmd.timestamp < ? OR cmd.timestamp > ?))",
                    4,
-                   INT, first_timestamp, INT, last_timestamp,
-                   INT, first_timestamp, INT, last_timestamp);
+                   INT, first_timestamp_g, INT, last_timestamp_g,
+                   INT, first_timestamp_g, INT, last_timestamp_g);
   while (sqlrun(readctx) == SQLITE_ROW) {
     cmd_id        = sqlcolint(readctx, 0);
     cmd_timestamp = sqlcolint(readctx, 1);
     args_id       = sqlcolint(readctx, 2);
     stamp         = timestamp2str(cmd_timestamp);
 
-    msg("purge candidate: cmd_id=%d, args_id=%d, timestamp=%s",
-        cmd_id, args_id, stamp);
+    msg("purge candidate: cmd_id=%d, args_id=%d, timestamp=%s", cmd_id, args_id, stamp);
     free(stamp);
 
     /* This args_id occurs only within the timestamp */
@@ -68,12 +67,12 @@ void purge() {
   }
 
   /* Whatever is left over should just be duplicates of other cmd entries
-     occurring in the given timeframe. We can delete those and ignore
+     occurring in the given time frame. We can delete those and ignore
      constraint errors. */
   cmdctx = sqlnew("DELETE FROM cmd "
                   "WHERE  timestamp >= ? AND timestamp <=? "
                   "AND    cmd_id NOT IN (SELECT cmd_id FROM crossref)",
-                 first_timestamp, last_timestamp);
+                 first_timestamp_g, last_timestamp_g);
   sqlrun(cmdctx);
   sqlend(cmdctx);
 }

@@ -8,5 +8,6 @@ char *xstrdup(char const *what) {
 
   if (! (ret = strdup(what)) )
     error("out of memory (while allocating %d bytes)", strlen(what));
+  
   return ret;
 }

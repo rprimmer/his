@@ -2,7 +2,7 @@
 
 static void check_ac(int ac, int required) {
   if (ac < required) {
-    if (report_missing_args) 
+    if (report_missing_args_g) 
       error("there are not enough parameters, (at least) %d required",
 	    required);
     exit(0);
@@ -23,7 +23,7 @@ static void parse_format_1(int ac, char **av, CmdToAdd *cmd) {
   check_ac(ac, 2);
   if (sscanf(av[1], "%c%4d-%2d-%2d", &ch1, &year, &month, &day) < 3 &&
       ch1 == '[')
-    error("expected '[YYYY-MM-DD' format, got %s instead", av[1]);
+    error("expected '[YYYY-MM-DD' format_g, got %s instead", av[1]);
   msg("YYYY-MM-DD: %4.4d-%2.2d-%2.2d", year, month, day);
 
   /* AV[2] (maybe [3] too): Grab the HH:MM:SS or HH:MM:SS +/-OFFSET] */
@@ -105,7 +105,7 @@ void parse(int ac, char **av, CmdToAdd *cmd) {
   msg("parsing for addition: %s", full);
   free(full);
 
-  switch (format) {
+  switch (format_g) {
     case 1:
       parse_format_1(ac, av, cmd);
       break;
@@ -116,7 +116,7 @@ void parse(int ac, char **av, CmdToAdd *cmd) {
       parse_format_3(ac, av, cmd);
       break;
     default:
-      error("internal error in parse, --format %d not yet implemented", format);
+      error("internal error in parse, --format_g %d not yet implemented", format_g);
       break;
   }
 

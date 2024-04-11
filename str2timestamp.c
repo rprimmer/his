@@ -5,10 +5,9 @@ time_t str2timestamp(char const *s) {
   struct tm stm;
   time_t ret;
 
-  if (sscanf(s, "%4d-%2d-%2d/%2d:%2d:%2d",
-             &year, &month, &day, &hour, &min, &sec) < 6)
-    error("timestamp %s doesn't follow required format YYYY-MM-DD/HH:MM:SS",
-          s);
+  if (sscanf(s, "%4d-%2d-%2d/%2d:%2d:%2d", &year, &month, &day, &hour, &min, &sec) < 6)
+    error("timestamp %s doesn't follow required format_g YYYY-MM-DD/HH:MM:SS", s);
+
   stm.tm_year = year - 1900;
   stm.tm_mon  = month - 1;
   stm.tm_mday = day;
@@ -16,13 +15,12 @@ time_t str2timestamp(char const *s) {
   stm.tm_min  = min;
   stm.tm_sec  = sec;
 
-  if (utc_time)
+  if (utc_time_g)
     ret = gm_mktime(&stm);
   else
     ret = mktime(&stm);
 
-  msg("timestring [%s] in %s: timestamp %d",
-      s, utc_time? "UTC" : "localtime", ret);
+  msg("timestring [%s] in %s: timestamp %d", s, utc_time_g? "UTC" : "localtime", ret);
+  
   return ret;
-
 }

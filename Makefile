@@ -6,7 +6,7 @@
 
 # Where does a default 'make install' put the binary.
 # Alternatively use: BINDIR=/what/ever make install
-BINDIR ?= $$HOME/bin
+BINDIR ?= /usr/local/bin
 
 # Versioning.
 # 1.00 [2017-09-01] First version
@@ -24,13 +24,15 @@ BINDIR ?= $$HOME/bin
 #                      spaces to avoid import problems. Fixed minor typo in
 #                      the usage info.
 
-VER    = '1.09'
+VER    = '1.1-'
 AUTHOR = 'Karel Kubat <karel@kubat.nl>'
 YEARS  = '2017ff'
 URL    = 'https://github.com/KarelKubat/his'
 
 SRC    = $(wildcard *.c)
 OBJ    = $(SRC:.c=.o)
+
+CC = clang
 
 # --------------------------------------------------------------------------
 # Top level rules

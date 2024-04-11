@@ -6,9 +6,7 @@ int lookup_arg(char const *arg) {
   SqlCtx *readctx, *writectx;
   int args_id;
 
-  readctx = sqlnew("SELECT args_id FROM args WHERE  arg = ?",
-                   1,
-                   STR, arg);
+  readctx = sqlnew("SELECT args_id FROM args WHERE  arg = ?", 1, STR, arg);
   if (sqlrun(readctx) == SQLITE_ROW) {
     args_id = sqlcolint(readctx, 0);
     msg("arg [%s] already found at ID %d", arg, args_id);
@@ -16,11 +14,9 @@ int lookup_arg(char const *arg) {
     return args_id;
   }
 
-  writectx = sqlnew("INSERT INTO args (arg) VALUES (?)",
-                    1,
-                    STR, arg);
+  writectx = sqlnew("INSERT INTO args (arg) VALUES (?)", 1, STR, arg);
   sqlrun(writectx);
-  args_id = sqlite3_last_insert_rowid(dbconn);
+  args_id = sqlite3_last_insert_rowid(dbconn_g);
   sqlend(writectx);
   msg("arg [%s] inserted at ID %d", arg, args_id);
   return args_id;

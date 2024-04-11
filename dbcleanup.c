@@ -6,30 +6,27 @@ void db_cleanup() {
      first place, but hey. There's crashes and stuff.
      But no bugs. No bugs at all. Never bugs.
 
-     We only do this if the count of inserts in the db has reached the magic
+     We only do this if the count_g of inserts in the db has reached the magic
      number 1962. Then we reset the counter. Why 1962? Because it's magic.
   */
 
-  if (insert_count < 1962)
+  // TODO: what if insert_count_g is >= 1962?
+  if (insert_count_g < 1962)
     return;
 
   msg("starting db cleanup");
 
-  /* Any cmd_id may only be in the db when it's in both the CMD and in
-     the CROSSREF tables. */
-  ctx = sqlnew("DELETE FROM cmd "
-               "WHERE  cmd_id NOT IN (SELECT cmd_id FROM crossref)", 0);
+  /* Any cmd_id may only be in the db when it's in both the CMD and in the CROSSREF tables. */
+  ctx = sqlnew("DELETE FROM cmd WHERE cmd_id NOT IN (SELECT cmd_id FROM crossref)", 0);
   sqlrun(ctx);
   sqlend(ctx);
 
-  /* Any args_id may only be in the db when it's in both the ARGS and in
-     the CROSSREF tables. */
-  ctx = sqlnew("DELETE FROM args "
-               "WHERE  args_id NOT IN (SELECT args_id FROM args)", 0);
+  /* Any args_id may only be in the db when it's in both the ARGS and in the CROSSREF tables. */
+  ctx = sqlnew("DELETE FROM args WHERE args_id NOT IN (SELECT args_id FROM args)", 0);
   sqlrun(ctx);
   sqlend(ctx);
 
-  /* Reset the insert count. */
+  /* Reset the insert count_g. */
   ctx = sqlnew("UPDATE housekeeping SET insert_count = 0", 0);
   sqlrun(ctx);
   sqlend(ctx);

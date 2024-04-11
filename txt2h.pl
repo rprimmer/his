@@ -30,4 +30,3 @@ while (my $line = <$if>) {
   print $of ('    ', '"', $line, "\\n", '"', "\\", "\n");
 }
 print $of ('    ', "\"\\n\"", "\n");
-

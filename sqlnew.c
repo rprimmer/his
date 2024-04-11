@@ -18,8 +18,8 @@ static sqlite3_stmt *sqlprepare(char const *sql) {
       return preparedstmt[i].stmt;
 
   msg("preparing [%s]", sql);
-  if ( (sqlite3_prepare(dbconn, sql, strlen(sql), &stmt, 0) != SQLITE_OK) )
-    error("failed to prepare [%s]: %s", sql, sqlite3_errmsg(dbconn));
+  if ( (sqlite3_prepare(dbconn_g, sql, strlen(sql), &stmt, 0) != SQLITE_OK) )
+    error("failed to prepare [%s]: %s", sql, sqlite3_errmsg(dbconn_g));
   preparedstmt =
       (PreparedStmt *)xrealloc(preparedstmt,
                                (npreparedstmt + 1) * sizeof(PreparedStmt));
@@ -34,15 +34,14 @@ static void sqlbindint(sqlite3_stmt *stmt, int val, int pos,
   // Why is sqlite3_bind_...() one-based instead of being sanely zero-based?
   if (sqlite3_bind_int(stmt, pos + 1, val) != SQLITE_OK)
     error("failed to bind int [%d] to pos %d in [%s]: %s",
-          val, pos, sql, sqlite3_errmsg(dbconn));
+          val, pos, sql, sqlite3_errmsg(dbconn_g));
 }
 
-static void sqlbindstring(sqlite3_stmt *stmt, char const *str, int pos,
-                          char const *sql) {
+static void sqlbindstring(sqlite3_stmt *stmt, char const *str, int pos, char const *sql) {
   msg("binding string [%s] to pos %d in [%s]", str, pos, sql);
+  
   if (sqlite3_bind_text(stmt, pos + 1, str, strlen(str), 0) != SQLITE_OK)
-    error("failed to bind string [%s] to pos %d in [%s]: %s",
-          str, pos, sql, sqlite3_errmsg(dbconn));
+    error("failed to bind string [%s] to pos %d in [%s]: %s", str, pos, sql, sqlite3_errmsg(dbconn_g));
 }
 
 SqlCtx *sqlnew(char const *sql, int nbindings, ...) {

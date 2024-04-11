@@ -3,7 +3,8 @@
 /* Standard mktime() thinks that assuming localtime is a good idea.
    We want real UTC.
    Shameless rip from http://www.catb.org/esr/time-programming/ */
-time_t gm_mktime(register struct tm *t) {
+
+time_t gm_mktime(struct tm *t) {
   register long year;
   register time_t result;
 
@@ -17,9 +18,9 @@ time_t gm_mktime(register struct tm *t) {
   result += (year - 1968) / 4;
   result -= (year - 1900) / 100;
   result += (year - 1600) / 400;
-  if ((year % 4) == 0 && ((year % 100) != 0 || (year % 400) == 0) &&
-      (t->tm_mon % MONTHSPERYEAR) < 2)
+  if ((year % 4) == 0 && ((year % 100) != 0 || (year % 400) == 0) && (t->tm_mon % MONTHSPERYEAR) < 2)
     result--;
+  
   result += t->tm_mday - 1;
   result *= 24;
   result += t->tm_hour;

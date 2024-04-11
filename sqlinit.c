@@ -2,8 +2,8 @@
 #include "createtablestxt.h"
 
 static void sqlopen() {
-  if (sqlite3_open(db, &dbconn))
-    error("cannot open db %s: %s", db, sqlite3_errmsg(dbconn));
+  if (sqlite3_open(db, &dbconn_g))
+    error("cannot open db %s: %s", db, sqlite3_errmsg(dbconn_g));
 }
 
 /* If the database doesn't exist yet, create it and the tables in it. */
@@ -13,7 +13,7 @@ void sqlinit() {
   SqlCtx *ctx;
   char *errmsg;
 
-  if (dbconn)
+  if (dbconn_g)
     return;
 
   db_exists = !stat(db, &statbuf) && statbuf.st_size > 0;
@@ -26,7 +26,7 @@ void sqlinit() {
     /* Create the tables. We don't do this with sqlnew()/sqlrun() because
        there are multiple SQL statements. */ 
     msg("creating db %s and its tables", db);
-    if (sqlite3_exec(dbconn, CREATETABLESTEXT, 0, 0, &errmsg) != SQLITE_OK)
+    if (sqlite3_exec(dbconn_g, CREATETABLESTEXT, 0, 0, &errmsg) != SQLITE_OK)
 	error("failed to create tables: %s", errmsg);
   }
   

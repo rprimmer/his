@@ -1,5 +1,5 @@
 Welcome to his %s, a CLI history tracker and finder of old invocations.
-Copyright (c) %s. %s. Distributed under GNU GPLV3.
+Copyright (c) %s. %s. Distributed under GNU GPL V3.
 See %s for more info. Use his as follows:
 
 his [--flags] [ARGS]
@@ -11,7 +11,7 @@ his [--flags] [ARGS]
 
   Use flags --first=FROM and --last=TO if you want to time-limit.
   Use flag  --count=NR to limit the displayed entries, default is 20 last.
-  Use flag  --utc to output timestams relative to GMT, default is local.
+  Use flag  --utc to output timestamps relative to GMT, default is local.
 
 his [--flags] -a,--add LINE
   Adds LINE to the history, see --list-formats for the supported parsing
@@ -27,23 +27,16 @@ his [--flags] -p,--purge
   given to avoid mistakenly removing everything.
 
 Supported general flags:
-  -d,--db=DB                : Sets Sqlite3 database path, default is
-                              $HOME/.his.db
+  -d,--db=DB                : Sets Sqlite3 database path, default is $HOME/.his.db
   -f,--first=STAMP          : Limits exports and searches to later or equal to
-                              STAMP, with STAMP having the format:
-			      YYYY-MM-DD/HH:MM:SS
+                              STAMP, with STAMP having the format:  YYYY-MM-DD/HH:MM:SS
   -F,--format=FMT           : Sets the format for parsing during --add
-  -l,--last=STAMP           : Limits exports and searches to earlier or equal
-                              to STAMP
+  -l,--last=STAMP           : Limits exports and searches to earlier or equal to STAMP
   -L,--list-formats         : Shows available parsing formats and stops
   -m,--multi-args           : During --add, LINE is assumed to to have all args
-                            separately (as in ls -Flag). Default is all in one
-			    string (as in 'ls -Flag').
+                            separately (as in ls -Flag). Default is all in one string (as in 'ls -Flag').
   -R, --report_missing_args : Be verbose when #args is incorrect
-  -u,--utc                  : Timestamps in listed output or imported input are
-                             assumed UTC (default: local time)
+  -u,--utc                  : Timestamps in listed output or imported input are assumed UTC (default: local time)
   -v,--verbose              : Increases verbosity
   -h,-?,--help              : Shows this text and stops
-  --                        : Stops parsing flags. Very useful in
-                                his --add -- $WHATEVER
-                              (when $WHATEVER contains a --flag)
+  --                        : Stops parsing flags. Very useful in his --add -- $WHATEVER (when $WHATEVER contains a --flag)

@@ -1,6 +1,6 @@
 #include "his.h"
 
-/* We had an insert. Create or update the count in the housekeeping table. */
+/* We had an insert. Create or update the count_g in the housekeeping table. */
 static void increment_inserts_count() {
   SqlCtx *readctx, *writectx;
 
@@ -28,24 +28,25 @@ void add(int ac, char **av) {
   SqlCtx *readctx, *writectx;
   int found_cmd_id;
 
-  /* In multiargs mode, we want at least some form of a timestamp and
+  /* In multiargs_g mode, we want at least some form of a timestamp and
      a command. In singleargs mode, we want exactly one arg. */
-  if (!multiargs) {
+  if (!multiargs_g) {
     /* Split by spaces if --multi-args is given. */
     if (ac != 1)
       error("--add (without --multi-args) needs exactly 1 argument");
+
     str2args(av[0], &args);
     parse(args.argc, args.argv, &cmd);
   } else {
     /* ac,av must be good */
     if (ac < 2)
-      error("--add --multi-args needs at least 2 arguments, some timestamp "
-            "and a cmd");
+      error("--add --multi-args needs at least 2 arguments, some timestamp and a cmd");
+
     parse(ac, av, &cmd);
   }
 
   /* Ignore cmds that start with 'his' unless specified by --accept-his */
-  if (!accept_his && !strcmp(cmd.av[0], "his")) {
+  if (!accept_his_g && !strcmp(cmd.av[0], "his")) {
       msg("command to add starts with 'his', not storing");
       return;
   }
@@ -56,8 +57,7 @@ void add(int ac, char **av) {
     tok = strtok(histignore, ":");
     while (tok) {
       if (!strcmp(cmd.av[0], tok)) {
-        msg("command to add starts with '%s', not storing due to $HISTIGNORE",
-            tok);
+        msg("command to add starts with '%s', not storing due to $HISTIGNORE", tok);
         return;
       }
       tok = strtok(0, ":");
@@ -81,8 +81,7 @@ void add(int ac, char **av) {
     found_cmd_id = sqlcolint(readctx, 0);
     if (sqlcolint(readctx, 1) == cmd.timestamp) {
       str_stamp = timestamp2str(cmd.timestamp);
-      msg("entry with hash [%s] was already added at timestamp %s",
-          cmd.hash, str_stamp);
+      msg("entry with hash [%s] was already added at timestamp %s", cmd.hash, str_stamp);
       free(str_stamp);
       sqlend(readctx);
       return;

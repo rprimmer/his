@@ -32,11 +32,9 @@ void import_cmds() {
     if (len < 19)
       error("import line [%s] is not long enough for a timestamp", buf);
     if (len < 21)
-      error("import line [%s] is not long enough for a timestamp, space, "
-            "and a command", buf);
+      error("import line [%s] is not long enough for a timestamp, space, and a command", buf);
     if (buf[19] != ' ')
-      error("import line [%s] lacks space separator between timestamp "
-            "and command", buf);
+      error("import line [%s] lacks space separator between timestamp and command", buf);
 
     add(1, &buf);
     free(buf);

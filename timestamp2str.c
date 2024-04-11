@@ -8,7 +8,7 @@ static char *tm_to_string(struct tm *tmptr) {
 
 
 char *timestamp2str(time_t t) {
-  if (utc_time)
+  if (utc_time_g)
     return tm_to_string(gmtime(&t));
   return tm_to_string(localtime(&t));
 }

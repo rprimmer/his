@@ -6,7 +6,7 @@ typedef struct {
   int hitcount;  /* Nr. of args this entry matches */
 } Result;
 
-/* The invocation was without timestamps, without a count, without args, so a
+/* The invocation was without timestamps, without a count_g, without args, so a
    full dump.  We can just order by timestamp, without constraints, and show
    all. */
 static void list_all() {
@@ -19,7 +19,7 @@ static void list_all() {
   sqlend(ctx);
 }
 
-/* The invocation was without args to find, but with a count or with
+/* The invocation was without args to find, but with a count_g or with
    timestamps. We must order by the timestamp in reverse to get the most recent
    matching entries, and then flip it for display. */
 static void list_by_timestamps() {
@@ -31,19 +31,19 @@ static void list_by_timestamps() {
   sql = xstrdup("SELECT cmd_id, timestamp FROM cmd");
 
   /* Add --first if given */
-  if (first_timestamp) {
-    extra = xsprintf(" WHERE timestamp >= %d", first_timestamp);
+  if (first_timestamp_g) {
+    extra = xsprintf(" WHERE timestamp >= %d", first_timestamp_g);
     sql = xstrcat(sql, extra);
     free(extra);
   }
 
   /* Add --last if given */
-  if (last_timestamp) {
-    if (first_timestamp)
+  if (last_timestamp_g) {
+    if (first_timestamp_g)
       sql = xstrcat(sql, " AND ");
     else
       sql = xstrcat(sql, " WHERE ");
-    extra = xsprintf(" timestamp <= %d", last_timestamp);
+    extra = xsprintf(" timestamp <= %d", last_timestamp_g);
     sql = xstrcat(sql, extra);
     free(extra);
   }
@@ -52,8 +52,8 @@ static void list_by_timestamps() {
   sql = xstrcat(sql, " ORDER BY timestamp DESC");
 
   /* Add countlimit if given */
-  if (count) {
-    extra = xsprintf(" LIMIT %d", count);
+  if (count_g) {
+    extra = xsprintf(" LIMIT %d", count_g);
     sql = xstrcat(sql, extra);
     free(extra);
   }
@@ -105,23 +105,23 @@ static void list_with_finding(int ac, char **av) {
 		   "WHERE  cmd.cmd_id = crossref.cmd_id "
 		   "AND    crossref.args_id = args.args_id "
 		   "AND    args.arg %s ?", stringop);
-    if (first_timestamp) {
-      extra = xsprintf(" AND cmd.timestamp >= %d", first_timestamp);
+    if (first_timestamp_g) {
+      extra = xsprintf(" AND cmd.timestamp >= %d", first_timestamp_g);
       sql = xstrcat(sql, extra);
       free(extra);
     }
-    if (last_timestamp) {
-      if (first_timestamp)
-        extra = xsprintf(" AND cmd.timestamp <= %d", last_timestamp);
+    if (last_timestamp_g) {
+      if (first_timestamp_g)
+        extra = xsprintf(" AND cmd.timestamp <= %d", last_timestamp_g);
       sql = xstrcat(sql, extra);
       free(extra);
     }
     sql = xstrcat(sql, " ORDER BY cmd.timestamp");
 
     msg("looking for [%s]", av[i]);
-    ctx = sqlnew(sql, 1,
-                 STR, av[i]);
+    ctx = sqlnew(sql, 1, STR, av[i]);
     free(sql);
+    
     while (sqlrun(ctx) == SQLITE_ROW) {
       found = 0;
       for (n = 0; n < nres; n++)
@@ -162,14 +162,14 @@ static void list_with_finding(int ac, char **av) {
     }
 
   /* Display starts at 0 if:
-     - There is no count specified
-     - There is a count specified, but we have less hits (nres)
-     Else, display starts at nres-count
+     - There is no count_g specified
+     - There is a count_g specified, but we have less hits (nres)
+     Else, display starts at nres-count_g
   */
-  if (!count || nres - count <= 0)
+  if (!count_g || nres - count_g <= 0)
     n = 0;
   else
-    n = nres - count;
+    n = nres - count_g;
   for (; n < nres; n++)
     if (res[n].hitcount == ac)
       show_command(res[n].cmd_id, res[n].timestamp);
@@ -177,14 +177,15 @@ static void list_with_finding(int ac, char **av) {
 }
 
 void list_cmds(int ac, char **av) {
-  /* If the count is uninitialized (-1) then apply the default 20. */
-  if (count < 0)
-    count = 20;
+  /* If the count_g is uninitialized (-1) then apply the default 20. */
+  // TODO: refactor to make count_g a parameter, not a global
+  if (count_g < 0)
+    count_g = 20;
 
   if (ac)
     list_with_finding(ac, av);
   else {
-    if (first_timestamp || last_timestamp || count)
+    if (first_timestamp_g || last_timestamp_g || count_g)
       list_by_timestamps();
     else
       list_all();

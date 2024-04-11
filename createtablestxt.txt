@@ -28,4 +28,3 @@ CREATE INDEX crossref_args_id_index ON crossref(args_id);
 CREATE TABLE housekeeping (
     insert_count INTEGER
 );
-

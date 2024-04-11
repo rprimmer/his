@@ -1,5 +1,4 @@
-/* DECLARE_DATA makes his.h define, not just declare variables that
-   are marked EXTERN */
+/* DEFINE_DATA makes his.h define, not just declare variables that are marked EXTERN */
 #define DEFINE_DATA
 
 #include "his.h"
@@ -17,15 +16,22 @@ int main(int argc, char **argv) {
   char *home;
   Action action = LIST;
 
-  /* Initialize globals */
+  // TODO: refactor to:
+  // char* home = getenv("HOME");
+  // const char* suffix = "/.his.db";
+  // size_t len = strlen(home) + strlen(suffix) + 1; 
+  // char* db = malloc(len);
+  // strcpy(db, home);   
+  // strcat(db, suffix); 
   if ( (home = getenv("HOME")) ) {
     db = xstrdup(home);
     db = xstrcat(db, "/.his.db");
   }
-  format = DEFAULT_FORMAT;
-  /* A negative count means: not initialized. It is overruled in
-     list_cmds() unless it's set by a flag. */
-  count = -1;
+
+  format_g = DEFAULT_FORMAT;
+
+  // A negative count_g means: not initialized. It is overruled in list_cmds() unless it's set by a flag.
+  count_g = -1;
 
   /* Supported flags */
   struct option flags[] = {
@@ -46,8 +52,7 @@ int main(int argc, char **argv) {
     { "help",                0, 0, 'h' },
     { 0,                     0, 0,  0  },
   };
-  while ( (opt = getopt_long(argc, argv, "aAc:d:f:F:il:Lmpvuh?",
-                             flags, 0)) > 0 ) {
+  while ( (opt = getopt_long(argc, argv, "aAc:d:f:F:il:Lmpvuh?", flags, 0)) > 0 ) {
     switch (opt) {
 
       case 'a':
@@ -57,15 +62,15 @@ int main(int argc, char **argv) {
 
       case 'A':
         /* Store cmds that start with 'his' */
-        accept_his++;
+        accept_his_g++;
         break;
 
       case 'c':
-        /* Set count for --most-recent */
+        /* Set count_g for --most-recent */
         if (!optarg || !*optarg)
-          error("missing --count value");
-        if ( (count = atoi(optarg)) < 0 )
-          error("bad --count value, must be a non-negative number");
+          error("missing --count_g value");
+        if ( (count_g = atoi(optarg)) < 0 )
+          error("bad --count_g value, must be a non-negative number");
         break;
 
       case 'd':
@@ -80,31 +85,30 @@ int main(int argc, char **argv) {
         /* First searching/dumping timestamp */
         if (!optarg || !*optarg)
           error("missing --first value");
-        first_timestamp = str2timestamp(optarg);
+        first_timestamp_g = str2timestamp(optarg);
         break;
 
       case 'F':
-        /* Set the format for adding. */
+        /* Set the format_g for adding. */
         if (!optarg || !*optarg)
-          error("missing --format value");
-        if (sscanf(optarg, "%d", &format) < 1)
-          error("bad --format value, not a number");
-        if (format < 1 || format > MAX_FORMAT)
-          error("bad --format value, must be at least 1 and at most %d",
-                MAX_FORMAT);
+          error("missing --format_g value");
+        if (sscanf(optarg, "%d", &format_g) < 1)
+          error("bad --format_g value, not a number");
+        if (format_g < 1 || format_g > MAX_FORMAT)
+          error("bad --format_g value, must be at least 1 and at most %d", MAX_FORMAT);
         break;
 
       case 'i':
         /* Import list from stdin */
         action = IMPORT;
-        multiargs = 0;
+        multiargs_g = 0;
         break;
 
       case 'l':
         /* Last searching/dumping timestamp */
         if (!optarg || !*optarg)
           error("missing --last value");
-        last_timestamp = str2timestamp(optarg);
+        last_timestamp_g = str2timestamp(optarg);
         break;
 
       case 'L':
@@ -114,7 +118,7 @@ int main(int argc, char **argv) {
 
       case 'm':
         /* Add should expect multiple args */
-        multiargs++;
+        multiargs_g++;
         break;
 
       case 'p':
@@ -123,18 +127,18 @@ int main(int argc, char **argv) {
         break;
 
       case 'R':
-	/* Report missing args ON */
-	report_missing_args++;
-	break;
+        /* Report missing args ON */
+        report_missing_args_g++;
+        break;
 
       case 'u':
         /* Import or export timestamps are UTC */
-        utc_time++;
+        utc_time_g++;
         break;
 
       case 'v':
-        /* Enable verbose mode */
-        verbose++;
+        /* Enable verbose_g mode */
+        verbose_g++;
         break;
 
       case 'h':
@@ -149,6 +153,7 @@ int main(int argc, char **argv) {
   /* Uninitialized errors */
   if (!db)
     error("failed to determine sqlite3 db path from $HOME or flag --db");
+ 
   msg("sqlite3 db is %s", db);
   sqlinit();
 
@@ -160,13 +165,15 @@ int main(int argc, char **argv) {
     case ADD:
       if (argc - optind <= 0)
         error("no command to add");
+      
       add(argc - optind, argv + optind);
       break;
       break;
     case IMPORT:
       if (argc - optind != 0)
-        error("no arguments expected after --import");\
-      format = 2;
+        error("no arguments expected after --import");
+
+      format_g = 2;
       import_cmds();
       break;
     case PURGE:
@@ -182,7 +189,7 @@ int main(int argc, char **argv) {
      error() out so it's safe to commit. We are not running this through
      sqlrun() because that might error out. If this COMMIT doesn't work then
      we can't do much about it anyway. */
-  sqlite3_exec(dbconn, "COMMIT TRANSACTION", 0, 0, 0);
+  sqlite3_exec(dbconn_g, "COMMIT TRANSACTION", 0, 0, 0);
 
   return 0;
 }
