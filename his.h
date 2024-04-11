@@ -3,6 +3,7 @@
  */
 
 #include <getopt.h>
+#include <libgen.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -12,6 +13,9 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sqlite3.h>
+
+// #define HANDLE_ERROR(fmt, ...) handleError(true, __FILE__, __func__, __LINE__, fmt, ##__VA_ARGS__)
+#define LOG_MSG(fmt, ...) msg(__FILE__, __func__, __LINE__, fmt, ##__VA_ARGS__)
 
 /* Type for a parsed command to add. */
 typedef struct {
@@ -78,7 +82,8 @@ extern char *hash_string(char const *s);
 extern void import_cmds(void);
 extern void list_formats(void);
 extern int lookup_arg(char const *arg);
-extern void msg(char const *fmt, ...);
+// extern void msg(char const *fmt, ...);
+void msg(char *file, const char *func, int line, const char *fmt, ...);
 extern void parse(int ac, char **av, CmdToAdd *cmd);
 extern void purge(void);
 extern void show_command(int cmd_id, int timestamp);

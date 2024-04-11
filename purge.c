@@ -37,19 +37,16 @@ void purge() {
     args_id       = sqlcolint(readctx, 2);
     stamp         = timestamp2str(cmd_timestamp);
 
-    msg("purge candidate: cmd_id=%d, args_id=%d, timestamp=%s", cmd_id, args_id, stamp);
+    LOG_MSG("purge candidate: cmd_id=%d, args_id=%d, timestamp=%s", cmd_id, args_id, stamp);
     free(stamp);
 
     /* This args_id occurs only within the timestamp */
-    argsctx = sqlnew("DELETE FROM args WHERE args_id = ?",
-                     1,
-                     INT, args_id);
+    argsctx = sqlnew("DELETE FROM args WHERE args_id = ?", 1, INT, args_id);
     sqlrun(argsctx);
     sqlend(argsctx);
 
     /* cmd entry can go. */
-    cmdctx = sqlnew("DELETE FROM cmd "
-                    "WHERE cmd_id = ? AND timestamp = ?",
+    cmdctx = sqlnew("DELETE FROM cmd WHERE cmd_id = ? AND timestamp = ?",
                     2,
                     INT, cmd_id, INT,
                     cmd_timestamp);
@@ -57,8 +54,7 @@ void purge() {
     sqlend(cmdctx);
 
     /* crossref is cleaned up last as it has foreign keys */
-    xrefctx = sqlnew("DELETE FROM crossref "
-                     "WHERE cmd_id = ? AND args_id = ?",
+    xrefctx = sqlnew("DELETE FROM crossref WHERE cmd_id = ? AND args_id = ?",
                      2,
                      INT, cmd_id,
                      INT, args_id);
@@ -69,8 +65,7 @@ void purge() {
   /* Whatever is left over should just be duplicates of other cmd entries
      occurring in the given time frame. We can delete those and ignore
      constraint errors. */
-  cmdctx = sqlnew("DELETE FROM cmd "
-                  "WHERE  timestamp >= ? AND timestamp <=? "
+  cmdctx = sqlnew("DELETE FROM cmd WHERE  timestamp >= ? AND timestamp <=? "
                   "AND    cmd_id NOT IN (SELECT cmd_id FROM crossref)",
                  first_timestamp_g, last_timestamp_g);
   sqlrun(cmdctx);

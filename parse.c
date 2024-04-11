@@ -21,34 +21,32 @@ static void parse_format_1(int ac, char **av, CmdToAdd *cmd) {
 
   /* AV[1]: Grab the YYYY-MM-DD, expected leader [ */
   check_ac(ac, 2);
-  if (sscanf(av[1], "%c%4d-%2d-%2d", &ch1, &year, &month, &day) < 3 &&
-      ch1 == '[')
+  if (sscanf(av[1], "%c%4d-%2d-%2d", &ch1, &year, &month, &day) < 3 && ch1 == '[')
     error("expected '[YYYY-MM-DD' format_g, got %s instead", av[1]);
-  msg("YYYY-MM-DD: %4.4d-%2.2d-%2.2d", year, month, day);
+
+  LOG_MSG("YYYY-MM-DD: %4.4d-%2.2d-%2.2d", year, month, day);
 
   /* AV[2] (maybe [3] too): Grab the HH:MM:SS or HH:MM:SS +/-OFFSET] */
   cmd_index = 3;  /* Assume no offset */
   check_ac(ac, 3);
-  if (sscanf(av[2], "%2d:%2d:%2d%c", &hour, &min, &sec, &ch1) >= 3 &&
-      ch1 == ']') {
-    msg("HH:MM:SS: %2.2d:%2.2d:%2.2d, no offset", hour, min, sec);
+  if (sscanf(av[2], "%2d:%2d:%2d%c", &hour, &min, &sec, &ch1) >= 3 && ch1 == ']') {
+    LOG_MSG("HH:MM:SS: %2.2d:%2.2d:%2.2d, no offset", hour, min, sec);
   } else {
     if (sscanf(av[2], "%2d:%2d:%2d", &hour, &min, &sec) < 3)
       error("expected HH:MM:DD or HH:MM:DD], got %s", av[2]);
-    msg("HH:MM:SS: %2.2d:%2.2d:%2.2d", hour, min, sec);
+
+    LOG_MSG("HH:MM:SS: %2.2d:%2.2d:%2.2d", hour, min, sec);
     check_ac(ac, 4);
 
     /* Expect the offset now as +HHMM or -HHMM. */
-    if (sscanf(av[3], "%c%d%c", &ch1, &offset, &ch2) >= 3 &&
-        ch1 == '+' && ch2 == ']') {
-      msg("offset: +%d", offset);
+    if (sscanf(av[3], "%c%d%c", &ch1, &offset, &ch2) >= 3 && ch1 == '+' && ch2 == ']') {
+      LOG_MSG("offset: +%d", offset);
       cmd_index = 4;
       /* Offset +0200 means we are 2 hours AHEAD of GMC. Invert to negative
          so it will be subtracted below. */
       offset = -1 * offset;
-    } else if (sscanf(av[3], "%c%d%c", &ch1, &offset, &ch2) >= 3
-               && ch1 == '-' && ch2 == ']') {
-      msg("offset: -%d", offset);
+    } else if (sscanf(av[3], "%c%d%c", &ch1, &offset, &ch2) >= 3 && ch1 == '-' && ch2 == ']') {
+      LOG_MSG("offset: -%d", offset);
       cmd_index = 4;
     } else
       error("expected +OFFSET] or -OFFSET], got %s", av[3]);
@@ -69,7 +67,7 @@ static void parse_format_1(int ac, char **av, CmdToAdd *cmd) {
   cmd->timestamp += off_hrs * 3600 + off_min * 60;
   stamp2 = timestamp2str(cmd->timestamp);
 
-  msg("parsed timestamp: %s, with offset calculation: %s", stamp1, stamp2);
+  LOG_MSG("parsed timestamp: %s, with offset calculation: %s", stamp1, stamp2);
   free(stamp1);
   free(stamp2);
 
@@ -79,6 +77,7 @@ static void parse_format_1(int ac, char **av, CmdToAdd *cmd) {
   cmd->av = (char **)xmalloc(cmd->ac * sizeof(char*));
   for (i = cmd_index; i < ac; i++)
     cmd->av[i - cmd_index] = av[i];
+
 }
 
 static void parse_format_2(int ac, char **av, CmdToAdd *cmd) {
@@ -94,6 +93,7 @@ static void parse_format_3(int ac, char **av, CmdToAdd *cmd) {
 
   if (sscanf(av[0], "%ld", &(cmd->timestamp)) < 0)
     error("UTC timestamp (number) expected, got %s", av[0]);
+
   cmd->av = av + 1;
   cmd->ac = ac - 1;
 }
@@ -102,7 +102,7 @@ void parse(int ac, char **av, CmdToAdd *cmd) {
   char *full, *stamp;
 
   full = full_command(ac, av);
-  msg("parsing for addition: %s", full);
+  LOG_MSG("parsing for addition: %s", full);
   free(full);
 
   switch (format_g) {
@@ -116,14 +116,14 @@ void parse(int ac, char **av, CmdToAdd *cmd) {
       parse_format_3(ac, av, cmd);
       break;
     default:
-      error("internal error in parse, --format_g %d not yet implemented", format_g);
+      error("internal error in parse, --format %d not yet implemented", format_g);
       break;
   }
 
   full = full_command(cmd->ac, cmd->av);
   stamp = timestamp2str(cmd->timestamp);
   cmd->hash = hash_string(full);
-  msg("cmd parsed: timestamp=%s, cmd=[%s], hash=[%s]", stamp, full, cmd->hash);
+  LOG_MSG("cmd parsed: timestamp=%s, cmd=[%s], hash=[%s]", stamp, full, cmd->hash);
   free(full);
   free(stamp);
 }

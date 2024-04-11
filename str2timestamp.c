@@ -20,7 +20,7 @@ time_t str2timestamp(char const *s) {
   else
     ret = mktime(&stm);
 
-  msg("timestring [%s] in %s: timestamp %d", s, utc_time_g? "UTC" : "localtime", ret);
+  LOG_MSG("timestring [%s] in %s: timestamp %d", s, utc_time_g? "UTC" : "localtime", ret);
   
   return ret;
 }

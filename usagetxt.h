@@ -31,17 +31,16 @@
     "  given to avoid mistakenly removing everything.\n"\
     "\n"\
     "Supported general flags:\n"\
-    "  -d,--db=DB                : Sets Sqlite3 database path, default is $HOME/.his.db\n"\
-    "  -f,--first=STAMP          : Limits exports and searches to later or equal to\n"\
-    "                              STAMP, with STAMP having the format:  YYYY-MM-DD/HH:MM:SS\n"\
-    "  -F,--format=FMT           : Sets the format for parsing during --add\n"\
-    "  -l,--last=STAMP           : Limits exports and searches to earlier or equal to STAMP\n"\
-    "  -L,--list-formats         : Shows available parsing formats and stops\n"\
-    "  -m,--multi-args           : During --add, LINE is assumed to to have all args\n"\
+    "  -d, --db=DB                : Sets Sqlite3 database path, default is $HOME/.his.db\n"\
+    "  -f, --first=STAMP          : Limits exports and searches to later or equal to STAMP, with STAMP having the format:  YYYY-MM-DD/HH:MM:SS\n"\
+    "  -F, --format=FMT           : Sets the format for parsing during --add\n"\
+    "  -l, --last=STAMP           : Limits exports and searches to earlier or equal to STAMP\n"\
+    "  -L, --list-formats         : Shows available parsing formats and stops\n"\
+    "  -m, --multi-args           : During --add, LINE is assumed to to have all args\n"\
     "                            separately (as in ls -Flag). Default is all in one string (as in \'ls -Flag\').\n"\
-    "  -R, --report_missing_args : Be verbose when #args is incorrect\n"\
-    "  -u,--utc                  : Timestamps in listed output or imported input are assumed UTC (default: local time)\n"\
-    "  -v,--verbose              : Increases verbosity\n"\
-    "  -h,-?,--help              : Shows this text and stops\n"\
-    "  --                        : Stops parsing flags. Very useful in his --add -- $WHATEVER (when $WHATEVER contains a --flag)\n"\
+    "  -R, --report_missing_args  : Be verbose when #args is incorrect\n"\
+    "  -u, --utc                  : Timestamps in listed output or imported input are assumed UTC (default: local time)\n"\
+    "  -v, --verbose              : Turns on logging to stderr\n"\
+    "  -h,-?, --help              : Shows this text and stops\n"\
+    "  --                         : Stops parsing flags. Very useful in his --add -- $WHATEVER (when $WHATEVER contains a --flag)\n"\
     "\n"

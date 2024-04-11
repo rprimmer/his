@@ -154,7 +154,7 @@ int main(int argc, char **argv) {
   if (!db)
     error("failed to determine sqlite3 db path from $HOME or flag --db");
  
-  msg("sqlite3 db is %s", db);
+  LOG_MSG("sqlite3 db is %s", db);
   sqlinit();
 
   /* Act. */

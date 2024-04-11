@@ -9,7 +9,7 @@ int lookup_arg(char const *arg) {
   readctx = sqlnew("SELECT args_id FROM args WHERE  arg = ?", 1, STR, arg);
   if (sqlrun(readctx) == SQLITE_ROW) {
     args_id = sqlcolint(readctx, 0);
-    msg("arg [%s] already found at ID %d", arg, args_id);
+    LOG_MSG("arg [%s] already found at ID %d", arg, args_id);
     sqlend(readctx);
     return args_id;
   }
@@ -18,6 +18,6 @@ int lookup_arg(char const *arg) {
   sqlrun(writectx);
   args_id = sqlite3_last_insert_rowid(dbconn_g);
   sqlend(writectx);
-  msg("arg [%s] inserted at ID %d", arg, args_id);
+  LOG_MSG("arg [%s] inserted at ID %d", arg, args_id);
   return args_id;
 }

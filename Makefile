@@ -24,7 +24,7 @@ BINDIR ?= /usr/local/bin
 #                      spaces to avoid import problems. Fixed minor typo in
 #                      the usage info.
 
-VER    = '1.1-'
+VER    = '2.00'
 AUTHOR = 'Karel Kubat <karel@kubat.nl>'
 YEARS  = '2017ff'
 URL    = 'https://github.com/KarelKubat/his'

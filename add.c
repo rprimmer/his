@@ -6,16 +6,11 @@ static void increment_inserts_count() {
 
   readctx = sqlnew("SELECT insert_count FROM housekeeping", 0);
   if (sqlrun(readctx) == SQLITE_ROW)
-    writectx = sqlnew("UPDATE housekeeping SET insert_count = ?",
-                      1,
-                      INT, sqlcolint(readctx, 0) + 1);
+    writectx = sqlnew("UPDATE housekeeping SET insert_count = ?", 1, INT, sqlcolint(readctx, 0) + 1);
   else
-    writectx = sqlnew("INSERT INTO housekeeping (insert_count) "
-                      "VALUES (?)",
-                      1,
-                      INT, 1);
-  sqlrun(writectx);
+    writectx = sqlnew("INSERT INTO housekeeping (insert_count) VALUES (?)", 1, INT, 1);
 
+  sqlrun(writectx);
   sqlend(readctx);
   sqlend(writectx);
 }
@@ -47,7 +42,7 @@ void add(int ac, char **av) {
 
   /* Ignore cmds that start with 'his' unless specified by --accept-his */
   if (!accept_his_g && !strcmp(cmd.av[0], "his")) {
-      msg("command to add starts with 'his', not storing");
+      LOG_MSG("command to add starts with 'his', not storing");
       return;
   }
 
@@ -57,7 +52,7 @@ void add(int ac, char **av) {
     tok = strtok(histignore, ":");
     while (tok) {
       if (!strcmp(cmd.av[0], tok)) {
-        msg("command to add starts with '%s', not storing due to $HISTIGNORE", tok);
+        LOG_MSG("command to add starts with '%s', not storing due to $HISTIGNORE", tok);
         return;
       }
       tok = strtok(0, ":");
@@ -71,28 +66,25 @@ void add(int ac, char **av) {
      If we already know a db entry with the same hash (but a different
      timestamp), then we can just duplicate it in the cmd table and be
      done. */
-  readctx = sqlnew("SELECT cmd_id, timestamp "
-                   "FROM   cmd "
-                   "WHERE  hash = ?",
-                   1,
-                   STR, cmd.hash);
+  readctx = sqlnew("SELECT cmd_id, timestamp FROM   cmd WHERE  hash = ?", 1, STR, cmd.hash);
   found_cmd_id = 0;
+
   while ( (sqlrun(readctx) == SQLITE_ROW) ) {
     found_cmd_id = sqlcolint(readctx, 0);
     if (sqlcolint(readctx, 1) == cmd.timestamp) {
       str_stamp = timestamp2str(cmd.timestamp);
-      msg("entry with hash [%s] was already added at timestamp %s", cmd.hash, str_stamp);
+      LOG_MSG("entry with hash [%s] was already added at timestamp %s", cmd.hash, str_stamp);
       free(str_stamp);
       sqlend(readctx);
       return;
     }
   }
+
   sqlend(readctx);
 
   if (found_cmd_id) {
-    msg("identical entry occurs at a different stamp, duplicating");
-    writectx = sqlnew("INSERT INTO cmd (cmd_id, hash, timestamp) "
-                      "VALUES (?, ?, ?)",
+    LOG_MSG("identical entry occurs at a different stamp, duplicating");
+    writectx = sqlnew("INSERT INTO cmd (cmd_id, hash, timestamp) VALUES (?, ?, ?)",
                       3,
                       INT, found_cmd_id,
                       STR, cmd.hash,
@@ -110,9 +102,9 @@ void add(int ac, char **av) {
     next_cmd_id = sqlcolint(readctx, 0) + 1;
   else
     next_cmd_id = 1;
-  msg("entry will be added at cmd_id=%d", next_cmd_id);
-  writectx = sqlnew("INSERT INTO cmd (cmd_id, hash, timestamp) "
-                    "VALUES (?, ?, ?)",
+
+  LOG_MSG("entry will be added at cmd_id=%d", next_cmd_id);
+  writectx = sqlnew("INSERT INTO cmd (cmd_id, hash, timestamp) VALUES (?, ?, ?)",
                     3,
                     INT, next_cmd_id,
                     STR, cmd.hash,
@@ -122,8 +114,7 @@ void add(int ac, char **av) {
 
   for (i = 0; i < cmd.ac; i++) {
     args_id = lookup_arg(cmd.av[i]);
-    writectx = sqlnew("INSERT INTO crossref (cmd_id, args_id, position) "
-                      "VALUES (?, ?, ?)",
+    writectx = sqlnew("INSERT INTO crossref (cmd_id, args_id, position) VALUES (?, ?, ?)",
                       3,
                       INT, next_cmd_id,
                       INT, args_id,

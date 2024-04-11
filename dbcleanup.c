@@ -14,7 +14,7 @@ void db_cleanup() {
   if (insert_count_g < 1962)
     return;
 
-  msg("starting db cleanup");
+  LOG_MSG("starting db cleanup");
 
   /* Any cmd_id may only be in the db when it's in both the CMD and in the CROSSREF tables. */
   ctx = sqlnew("DELETE FROM cmd WHERE cmd_id NOT IN (SELECT cmd_id FROM crossref)", 0);

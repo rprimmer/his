@@ -21,13 +21,13 @@ void sqlinit() {
 
   if (db_exists)
     /* Tables have already been set up. */
-    msg("db %s already exists (with size %d)", db, statbuf.st_size);
+    LOG_MSG("db %s already exists (with size %d)", db, statbuf.st_size);
   else {
     /* Create the tables. We don't do this with sqlnew()/sqlrun() because
        there are multiple SQL statements. */ 
-    msg("creating db %s and its tables", db);
+    LOG_MSG("creating db %s and its tables", db);
     if (sqlite3_exec(dbconn_g, CREATETABLESTEXT, 0, 0, &errmsg) != SQLITE_OK)
-	error("failed to create tables: %s", errmsg);
+	    error("failed to create tables: %s", errmsg);
   }
   
   /* Start a sqlite3 transaction. An error will roll back, a successful

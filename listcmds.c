@@ -7,15 +7,14 @@ typedef struct {
 } Result;
 
 /* The invocation was without timestamps, without a count_g, without args, so a
-   full dump.  We can just order by timestamp, without constraints, and show
-   all. */
+   full dump.  We can just order by timestamp, without constraints, and show all. */
 static void list_all() {
   SqlCtx *ctx;
 
-  ctx = sqlnew("SELECT cmd_id, timestamp FROM cmd ORDER BY timestamp",
-               0);
+  ctx = sqlnew("SELECT cmd_id, timestamp FROM cmd ORDER BY timestamp", 0);
   while ( (sqlrun(ctx) == SQLITE_ROW) )
     show_command(sqlcolint(ctx, 0), sqlcolint(ctx, 1));
+
   sqlend(ctx);
 }
 
@@ -43,6 +42,7 @@ static void list_by_timestamps() {
       sql = xstrcat(sql, " AND ");
     else
       sql = xstrcat(sql, " WHERE ");
+
     extra = xsprintf(" timestamp <= %d", last_timestamp_g);
     sql = xstrcat(sql, extra);
     free(extra);
@@ -66,6 +66,7 @@ static void list_by_timestamps() {
       res = (Result *) xmalloc(sizeof(Result));
     else
       res = (Result *) xrealloc(res, (nres + 1) * sizeof(Result));
+
     res[nres].cmd_id    = sqlcolint(ctx, 0);
     res[nres].timestamp = sqlcolint(ctx, 1);
     nres++;
@@ -74,6 +75,7 @@ static void list_by_timestamps() {
 
   for (i = nres - 1; i >= 0; i--)
     show_command(res[i].cmd_id, res[i].timestamp);
+
   free(res);
 }
 
@@ -93,7 +95,7 @@ static void list_with_finding(int ac, char **av) {
   int nres = 0;
 
   full = full_command(ac, av);
-  msg("filtering for [%s]", full);
+  LOG_MSG("filtering for [%s]", full);
   free(full);
 
   for (i = 0; i < ac; i++) {
@@ -113,20 +115,21 @@ static void list_with_finding(int ac, char **av) {
     if (last_timestamp_g) {
       if (first_timestamp_g)
         extra = xsprintf(" AND cmd.timestamp <= %d", last_timestamp_g);
+
       sql = xstrcat(sql, extra);
       free(extra);
     }
+    
     sql = xstrcat(sql, " ORDER BY cmd.timestamp");
 
-    msg("looking for [%s]", av[i]);
+    LOG_MSG("looking for [%s]", av[i]);
     ctx = sqlnew(sql, 1, STR, av[i]);
     free(sql);
     
     while (sqlrun(ctx) == SQLITE_ROW) {
       found = 0;
       for (n = 0; n < nres; n++)
-        if (res[n].cmd_id    == sqlcolint(ctx, 0) &&
-            res[n].timestamp == sqlcolint(ctx, 1)) {
+        if (res[n].cmd_id    == sqlcolint(ctx, 0) && res[n].timestamp == sqlcolint(ctx, 1)) {
           res[n].hitcount++;
           found++;
         }
@@ -140,18 +143,17 @@ static void list_with_finding(int ac, char **av) {
     }
     for (n = 0; n < nres; n++) {
       stamp = timestamp2str(res[n].timestamp);
-      msg("ID %d at %s now has %d hits", res[n].cmd_id, stamp, res[n].hitcount);
+      LOG_MSG("ID %d at %s now has %d hits", res[n].cmd_id, stamp, res[n].hitcount);
       free(stamp);
     }
   }
+
   sqlend(ctx);
 
   /* Sort the results by timestamp. */
   qsort(res, nres, sizeof(Result), compar);
 
-  /* Remove entries that don't hit all required args, ie. entries
-     where hitcount < ac
-  */
+  // Remove entries that don't hit all required args, ie. entries where hitcount < ac
   n = 0;
   while (n < nres)
     if (res[n].hitcount < ac) {
@@ -170,9 +172,11 @@ static void list_with_finding(int ac, char **av) {
     n = 0;
   else
     n = nres - count_g;
+
   for (; n < nres; n++)
     if (res[n].hitcount == ac)
       show_command(res[n].cmd_id, res[n].timestamp);
+  
   free(res);
 }
 
