@@ -11,23 +11,16 @@ typedef enum {
 } Action;
 
 int main(int argc, char **argv) {
-
   int opt;
-  char *home;
   Action action = LIST;
   verbose_g = 0; 
 
-  // TODO: refactor to:
-  // char* home = getenv("HOME");
-  // const char* suffix = "/.his.db";
-  // size_t len = strlen(home) + strlen(suffix) + 1; 
-  // char* db = malloc(len);
-  // strcpy(db, home);   
-  // strcat(db, suffix); 
-  if ( (home = getenv("HOME")) ) {
-    db = xstrdup(home);
-    db = xstrcat(db, "/.his.db");
-  }
+  char* home = getenv("HOME");
+  const char* suffix = "/.his.db";
+  size_t len = strlen(home) + strlen(suffix) + 1; 
+  db = malloc(len);
+  strcpy(db, home);   
+  strcat(db, suffix); 
 
   format_g = DEFAULT_FORMAT;
 
@@ -191,6 +184,8 @@ int main(int argc, char **argv) {
      sqlrun() because that might error out. If this COMMIT doesn't work then
      we can't do much about it anyway. */
   sqlite3_exec(dbconn_g, "COMMIT TRANSACTION", 0, 0, 0);
+
+  free(db);
 
   return 0;
 }
