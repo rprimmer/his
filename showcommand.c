@@ -2,7 +2,7 @@
 
 void show_command(int cmd_id, int timestamp) {
   char *line, *cp;
-  SqlCtx *ctx;
+  SqlCtx_s *ctx;
 
   line = timestamp2str(timestamp);
   ctx = sqlnew("SELECT   arg from cmd, args, crossref "

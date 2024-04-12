@@ -1,7 +1,7 @@
 #include "his.h"
 
 void purge() {
-  SqlCtx *readctx, *xrefctx, *cmdctx, *argsctx;
+  SqlCtx_s *readctx, *xrefctx, *cmdctx, *argsctx;
   char *stamp;
   int cmd_id, cmd_timestamp, args_id;
 

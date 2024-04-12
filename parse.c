@@ -9,7 +9,7 @@ static void check_ac(int ac, int required) {
   }
 }
 
-static void parse_format_1(int ac, char **av, CmdToAdd *cmd) {
+static void parse_format_1(int ac, char **av, CmdToAdd_s *cmd) {
   int year, month, day, hour, min, sec, offset = 0;
   struct tm tm_stamp;
   int cmd_index, i;
@@ -80,7 +80,7 @@ static void parse_format_1(int ac, char **av, CmdToAdd *cmd) {
 
 }
 
-static void parse_format_2(int ac, char **av, CmdToAdd *cmd) {
+static void parse_format_2(int ac, char **av, CmdToAdd_s *cmd) {
   check_ac(ac, 2);
 
   cmd->timestamp = str2timestamp(av[0]);
@@ -88,7 +88,7 @@ static void parse_format_2(int ac, char **av, CmdToAdd *cmd) {
   cmd->ac = ac - 1;
 }
 
-static void parse_format_3(int ac, char **av, CmdToAdd *cmd) {
+static void parse_format_3(int ac, char **av, CmdToAdd_s *cmd) {
   check_ac(ac, 2);
 
   if (sscanf(av[0], "%ld", &(cmd->timestamp)) < 0)
@@ -98,7 +98,7 @@ static void parse_format_3(int ac, char **av, CmdToAdd *cmd) {
   cmd->ac = ac - 1;
 }
 
-void parse(int ac, char **av, CmdToAdd *cmd) {
+void parse(int ac, char **av, CmdToAdd_s *cmd) {
   char *full, *stamp;
 
   full = full_command(ac, av);

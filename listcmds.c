@@ -9,7 +9,7 @@ typedef struct {
 /* The invocation was without timestamps, without a count_g, without args, so a
    full dump.  We can just order by timestamp, without constraints, and show all. */
 static void list_all() {
-  SqlCtx *ctx;
+  SqlCtx_s *ctx;
 
   ctx = sqlnew("SELECT cmd_id, timestamp FROM cmd ORDER BY timestamp", 0);
   while ( (sqlrun(ctx) == SQLITE_ROW) )
@@ -22,7 +22,7 @@ static void list_all() {
    timestamps. We must order by the timestamp in reverse to get the most recent
    matching entries, and then flip it for display. */
 static void list_by_timestamps() {
-  SqlCtx *ctx;
+  SqlCtx_s *ctx;
   char *sql, *extra;
   Result *res = 0;
   int nres = 0, i;
@@ -89,7 +89,7 @@ static int compar(const void *a, const void *b) {
 /* The invocation was with args to find. */
 static void list_with_finding(int ac, char **av) {
   char *full, *sql, *extra, *stamp, *stringop;
-  SqlCtx *ctx;
+  SqlCtx_s *ctx;
   int i, n, found;
   Result *res = 0;
   int nres = 0;

@@ -1,6 +1,6 @@
 #include "his.h"
 
-void str2args(char *s, Args *args) {
+void str2args(char *s, Args_s *args) {
   char *tok;
 
   args->argc = 0;

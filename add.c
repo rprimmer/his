@@ -2,7 +2,7 @@
 
 /* We had an insert. Create or update the count_g in the housekeeping table. */
 static void increment_inserts_count() {
-  SqlCtx *readctx, *writectx;
+  SqlCtx_s *readctx, *writectx;
 
   readctx = sqlnew("SELECT insert_count FROM housekeeping", 0);
   if (sqlrun(readctx) == SQLITE_ROW)
@@ -16,11 +16,11 @@ static void increment_inserts_count() {
 }
 
 void add(int ac, char **av) {
-  CmdToAdd cmd;
+  CmdToAdd_s cmd;
   char *str_stamp, *histignore, *tok;
   int next_cmd_id, i, args_id;
-  Args args;
-  SqlCtx *readctx, *writectx;
+  Args_s args;
+  SqlCtx_s *readctx, *writectx;
   int found_cmd_id;
 
   /* In multiargs_g mode, we want at least some form of a timestamp and

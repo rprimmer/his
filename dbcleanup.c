@@ -1,7 +1,7 @@
 #include "his.h"
 
 void db_cleanup() {
-  SqlCtx *ctx;
+  SqlCtx_s *ctx;
   /* Enforce DB consistency. Such errors should of course not occur in the
      first place, but hey. There's crashes and stuff.
      But no bugs. No bugs at all. Never bugs.

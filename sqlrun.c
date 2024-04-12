@@ -1,6 +1,6 @@
 #include "his.h"
 
-int sqlrun(SqlCtx *ctx) {
+int sqlrun(SqlCtx_s *ctx) {
   int ret, i;
 
   // Retry database locked conditions.

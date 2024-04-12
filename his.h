@@ -23,25 +23,25 @@ typedef struct {
   char *hash;
   int ac;
   char **av;
-} CmdToAdd;
+} CmdToAdd_s;
 
 /* Representation of argc/argv, when parsed from a string. */
 typedef struct {
   int argc;
   char **argv;
-} Args;
+} Args_s;
 
 /* Type of bindings in a sqlnew() call */
 typedef enum {
   INT,
   STR,
-} SqlBindType;
+} SqlBindType_s;
 
 /* Context for sqlite3 runs */
 typedef struct {
   char const *sql;
   sqlite3_stmt *stmt;
-} SqlCtx;
+} SqlCtx_s;
 
 /* Max parsing format_g that is acceptable and the default */
 #define DEFAULT_FORMAT 1
@@ -84,17 +84,17 @@ extern void list_formats(void);
 extern int lookup_arg(char const *arg);
 // extern void msg(char const *fmt, ...);
 void msg(char *file, const char *func, int line, const char *fmt, ...);
-extern void parse(int ac, char **av, CmdToAdd *cmd);
+extern void parse(int ac, char **av, CmdToAdd_s *cmd);
 extern void purge(void);
 extern void show_command(int cmd_id, int timestamp);
-extern void str2args(char *s, Args *args);
+extern void str2args(char *s, Args_s *args);
 extern time_t str2timestamp(char const *s);
 extern void sqlinit(void);
-extern int sqlcolint(SqlCtx *ctx, int col);
-extern const char *sqlcolstring(SqlCtx *ctx, int col);
-extern SqlCtx *sqlnew(char const *sql, int nbindings, ...);
-extern int sqlrun(SqlCtx *ctx);
-extern void sqlend(SqlCtx *ctx);
+extern int sqlcolint(SqlCtx_s *ctx, int col);
+extern const char *sqlcolstring(SqlCtx_s *ctx, int col);
+extern SqlCtx_s *sqlnew(char const *sql, int nbindings, ...);
+extern int sqlrun(SqlCtx_s *ctx);
+extern void sqlend(SqlCtx_s *ctx);
 extern char *timestamp2str(time_t t);
 extern void usage(void);
 extern void *xmalloc(size_t sz);

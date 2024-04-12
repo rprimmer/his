@@ -3,7 +3,7 @@
 /* Lookup an arg in table args. If it isn't found yet, insert it.
    Return its ID. */
 int lookup_arg(char const *arg) {
-  SqlCtx *readctx, *writectx;
+  SqlCtx_s *readctx, *writectx;
   int args_id;
 
   readctx = sqlnew("SELECT args_id FROM args WHERE  arg = ?", 1, STR, arg);

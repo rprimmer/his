@@ -15,6 +15,7 @@ int main(int argc, char **argv) {
   int opt;
   char *home;
   Action action = LIST;
+  verbose_g = 0; 
 
   // TODO: refactor to:
   // char* home = getenv("HOME");

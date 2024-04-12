@@ -10,7 +10,7 @@ static void sqlopen() {
 void sqlinit() {
   struct stat statbuf;
   int db_exists;
-  SqlCtx *ctx;
+  SqlCtx_s *ctx;
   char *errmsg;
 
   if (dbconn_g)

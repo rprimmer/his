@@ -18,6 +18,7 @@ static sqlite3_stmt *sqlprepare(char const *sql) {
       return preparedstmt[i].stmt;
 
   LOG_MSG("preparing [%s]", sql);
+  
   if ( (sqlite3_prepare(dbconn_g, sql, strlen(sql), &stmt, 0) != SQLITE_OK) )
     error("failed to prepare [%s]: %s", sql, sqlite3_errmsg(dbconn_g));
   
@@ -29,6 +30,7 @@ static sqlite3_stmt *sqlprepare(char const *sql) {
 
 static void sqlbindint(sqlite3_stmt *stmt, int val, int pos, char const *sql) {
   LOG_MSG("binding int [%d] to pos %d in [%s]", val, pos, sql);
+
   // Why is sqlite3_bind_...() one-based instead of being sanely zero-based?
   if (sqlite3_bind_int(stmt, pos + 1, val) != SQLITE_OK)
     error("failed to bind int [%d] to pos %d in [%s]: %s", val, pos, sql, sqlite3_errmsg(dbconn_g));
@@ -41,14 +43,14 @@ static void sqlbindstring(sqlite3_stmt *stmt, char const *str, int pos, char con
     error("failed to bind string [%s] to pos %d in [%s]: %s", str, pos, sql, sqlite3_errmsg(dbconn_g));
 }
 
-SqlCtx *sqlnew(char const *sql, int nbindings, ...) {
+SqlCtx_s *sqlnew(char const *sql, int nbindings, ...) {
   va_list args;
-  SqlCtx *ctx;
+  SqlCtx_s *ctx;
   int i;
-  SqlBindType bindtype;
+  SqlBindType_s bindtype;
 
   va_start(args, nbindings);
-  ctx = (SqlCtx *)xmalloc(sizeof(SqlCtx));
+  ctx = (SqlCtx_s *)xmalloc(sizeof(SqlCtx_s));
   ctx->sql = sql;
   ctx->stmt = sqlprepare(ctx->sql);
 
