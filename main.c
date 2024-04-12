@@ -1,8 +1,6 @@
 /* DEFINE_DATA makes his.h define, not just declare variables that are marked EXTERN */
 #define DEFINE_DATA
-
 #include "his.h"
-
 typedef enum {
   LIST,       /* Selected when no flag like --add, --export is given */
   ADD,        /* Selected when --add is seen */
@@ -71,6 +69,7 @@ int main(int argc, char **argv) {
         /* sqlite3 db name */
         if (!optarg || !*optarg)
           error("missing --db value");
+
         free(db);
         db = optarg;
         break;
@@ -79,6 +78,7 @@ int main(int argc, char **argv) {
         /* First searching/dumping timestamp */
         if (!optarg || !*optarg)
           error("missing --first value");
+
         first_timestamp_g = str2timestamp(optarg);
         break;
 
@@ -102,6 +102,7 @@ int main(int argc, char **argv) {
         /* Last searching/dumping timestamp */
         if (!optarg || !*optarg)
           error("missing --last value");
+
         last_timestamp_g = str2timestamp(optarg);
         break;
 
@@ -149,6 +150,7 @@ int main(int argc, char **argv) {
     error("failed to determine sqlite3 db path from $HOME or flag --db");
  
   LOG_MSG("sqlite3 db is %s", db);
+
   sqlinit();
 
   /* Act. */
@@ -175,8 +177,7 @@ int main(int argc, char **argv) {
       break;
   }
 
-  /* Run a consistency checker if we have hit <magicnumber> of inserts
-     since the last checker run. */
+  // Run a consistency checker if we have hit <magicnumber> of inserts since the last checker run. 
   db_cleanup();
 
   /* A transaction was started in sqlinit(). We got here because we didn't

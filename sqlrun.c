@@ -11,7 +11,7 @@ int sqlrun(SqlCtx_s *ctx) {
     sleep(1);
   }
   if (ret != SQLITE_ROW && ret != SQLITE_DONE)
-    error("sql run of [%s] failed with state %d: %s",
-          ctx->sql, ret, sqlite3_errmsg(dbconn_g));
+    error("sql run of [%s] failed with state %d: %s", ctx->sql, ret, sqlite3_errmsg(dbconn_g));
+    
   return ret;
 }

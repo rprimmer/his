@@ -30,8 +30,7 @@ void sqlinit() {
 	    error("failed to create tables: %s", errmsg);
   }
   
-  /* Start a sqlite3 transaction. An error will roll back, a successful
-     finish of main() will commit. */
+  // Start a sqlite3 transaction. An error will roll back, a successful finish of main() will commit. 
   ctx = sqlnew("BEGIN TRANSACTION", 0);
   sqlrun(ctx);
   sqlend(ctx);
