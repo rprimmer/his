@@ -74,7 +74,7 @@ static void parse_format_1(int ac, char **av, CmdToAdd_s *cmd) {
   /* AV[cmd_index] and further is the cmd to add */
   check_ac(ac, cmd_index + 1);
   cmd->ac = ac - cmd_index;
-  cmd->av = (char **)xmalloc(cmd->ac * sizeof(char*));
+  cmd->av = (char **)xcalloc(cmd->ac * sizeof(char*));
   for (i = cmd_index; i < ac; i++)
     cmd->av[i - cmd_index] = av[i];
 

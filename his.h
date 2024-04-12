@@ -97,7 +97,7 @@ extern int sqlrun(SqlCtx_s *ctx);
 extern void sqlend(SqlCtx_s *ctx);
 extern char *timestamp2str(time_t t);
 extern void usage(void);
-extern void *xmalloc(size_t sz);
+extern void *xcalloc(size_t sz);
 extern void *xrealloc(void *what, size_t sz);
 extern char *xsprintf(char const *fmt, ...);
 extern char *xstrcat(char *what, char const *extra);

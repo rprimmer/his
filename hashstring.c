@@ -164,7 +164,7 @@ char *hash_string(char const *s) {
     sha256_update(&ctx, (unsigned char *)s, strlen(s));
     sha256_final(&ctx, hash);
 
-    ret = xmalloc(sizeof(hash) * 2 + 1);
+    ret = xcalloc(sizeof(hash) * 2 + 1);
     ret[sizeof(hash) * 2] = 0;
     for (i = 0; i < sizeof(hash); i++)
 	sprintf(ret + i * 2, "%2.2x", hash[i]);

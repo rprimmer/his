@@ -63,7 +63,7 @@ static void list_by_timestamps() {
 
   while ( (sqlrun(ctx) == SQLITE_ROW) ) {
     if (!nres)
-      res = (Result *) xmalloc(sizeof(Result));
+      res = (Result *) xcalloc(sizeof(Result));
     else
       res = (Result *) xrealloc(res, (nres + 1) * sizeof(Result));
 

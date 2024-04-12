@@ -9,7 +9,7 @@ void str2args(char *s, Args_s *args) {
   while (tok) {
     if (*tok != ' ') {
       if (!args->argc)
-        args->argv = (char **) xmalloc(sizeof(char*));
+        args->argv = (char **) xcalloc(sizeof(char*));
       else
         args->argv = (char **) xrealloc(args->argv,
                                         (args->argc + 1) * sizeof(char *));

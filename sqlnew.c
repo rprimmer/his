@@ -18,7 +18,7 @@ static sqlite3_stmt *sqlprepare(char const *sql) {
       return preparedstmt[i].stmt;
 
   LOG_MSG("preparing [%s]", sql);
-  
+
   if ( (sqlite3_prepare(dbconn_g, sql, strlen(sql), &stmt, 0) != SQLITE_OK) )
     error("failed to prepare [%s]: %s", sql, sqlite3_errmsg(dbconn_g));
   
@@ -50,7 +50,7 @@ SqlCtx_s *sqlnew(char const *sql, int nbindings, ...) {
   SqlBindType_s bindtype;
 
   va_start(args, nbindings);
-  ctx = (SqlCtx_s *)xmalloc(sizeof(SqlCtx_s));
+  ctx = (SqlCtx_s *)xcalloc(sizeof(SqlCtx_s));
   ctx->sql = sql;
   ctx->stmt = sqlprepare(ctx->sql);
 

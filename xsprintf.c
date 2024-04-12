@@ -8,7 +8,7 @@ char *xsprintf(char const *fmt, ...) {
   va_start(args, fmt);
   for (sz = 512; sz < 51200; sz += 512) {
     free(buf);
-    buf = (char*)xmalloc(sz);
+    buf = (char*)xcalloc(sz);
     if (vsnprintf(buf, sz, fmt, args) < (int)sz) {
       ret = xstrdup(buf);
       free(buf);

@@ -1,12 +1,10 @@
 #include "his.h"
 
-void *xmalloc(size_t sz) {
+void *xcalloc(size_t sz) {
   void *ret;
 
-  // TODO: refactor to calloc 
-  if (! (ret = malloc(sz)) )
+  if (! (ret = calloc(1, sz)) )
     error("out of memory (while allocating %d bytes)", sz);
   
-  memset(ret, 0, sz);
   return ret;
 }

@@ -61,6 +61,7 @@
         "tmptr",
         "USAGETEXT",
         "writectx",
+        "xcalloc",
         "xrealloc",
         "xrefctx",
         "xsprintf",
